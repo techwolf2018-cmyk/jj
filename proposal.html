@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For You 💖</title>
+    <meta name="description" content="A special proposal for someone special.">
+    <style>
+        /* Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap');
+
+        :root {
+            --primary: #ff477e;
+            --secondary: #ff7096;
+            --bg: #ffe4e6;
+            --text-dark: #333;
+            --white: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #ffd0d6 0%, #ffc0cb 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Ambient Particles Container */
+        .particles-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .ambient-particle {
+            position: absolute;
+            bottom: -50px;
+            font-size: 24px;
+            animation: floatUp linear infinite;
+            opacity: 0.7;
+            filter: drop-shadow(0 2px 4px rgba(255, 71, 126, 0.2));
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-110vh) rotate(360deg) scale(0.5);
+                opacity: 0;
+            }
+        }
+
+        /* Mouse Trail Particles */
+        .mouse-trail-particle {
+            position: absolute;
+            pointer-events: none;
+            font-size: 1.2rem;
+            z-index: 9999;
+            opacity: 0.9;
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Screen Management */
+        .screen {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            transition: opacity 1s ease, transform 1s ease;
+            z-index: 10;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            visibility: hidden;
+            transform: scale(0.95);
+        }
+
+        .screen.active {
+            opacity: 1;
+            pointer-events: auto;
+            visibility: visible;
+            transform: scale(1);
+        }
+
+        /* Typography */
+        h1,
+        h2 {
+            font-family: 'Dancing Script', cursive;
+            color: var(--primary);
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+        }
+
+        h2 {
+            font-size: 2.8rem;
+            margin-top: 20px;
+            animation: pulse 2s infinite ease-in-out;
+            background: linear-gradient(45deg, #ff477e, #ff7096);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: none;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Envelope Styles (Screen 0) */
+        .envelope-container {
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.3s ease;
+        }
+
+        .envelope-container:hover {
+            transform: scale(1.05) translateY(-5px);
+        }
+
+        .envelope {
+            width: 300px;
+            height: 200px;
+            background: #ff7096;
+            position: relative;
+            border-radius: 10px;
+            box-shadow: 0 15px 40px rgba(255, 71, 126, 0.4);
+            transition: transform 0.5s ease;
+        }
+
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-top: 110px solid #ff477e;
+            transform-origin: top;
+            transition: transform 0.6s ease, z-index 0.2s 0.2s;
+            z-index: 4;
+        }
+
+        .envelope-front {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            top: 0;
+            border-left: 150px solid #ff8fa3;
+            border-right: 150px solid #ff8fa3;
+            border-bottom: 100px solid #ff5c8a;
+            border-top: 100px solid transparent;
+            z-index: 3;
+            border-radius: 0 0 10px 10px;
+            pointer-events: none;
+        }
+
+        .envelope-paper {
+            position: absolute;
+            top: 10px;
+            left: 15px;
+            right: 15px;
+            bottom: 10px;
+            background: #fff;
+            border-radius: 10px;
+            z-index: 2;
+            transition: transform 0.8s ease 0.4s;
+            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .envelope-paper p {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2rem;
+            color: var(--primary);
+            line-height: 1;
+        }
+
+        .envelope.open .envelope-flap {
+            transform: rotateX(180deg);
+            z-index: 1;
+            transition: transform 0.6s ease, z-index 0.1s 0s;
+        }
+
+        .envelope.open .envelope-paper {
+            transform: translateY(-130px);
+            z-index: 5;
+        }
+
+        .click-text {
+            margin-top: 30px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary);
+            animation: bounce 2s infinite ease-in-out;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Screen 1 specific */
+        .message {
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            font-size: 1.2rem;
+            color: #d81b60;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            z-index: 100;
+            text-align: left;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(255, 71, 126, 0.3);
+            backdrop-filter: blur(5px);
+            border: 2px solid rgba(255, 71, 126, 0.4);
+            max-width: 85%;
+            pointer-events: none;
+            /* So it doesn't block clicks */
+            opacity: 0;
+            /* Hidden initially until hovered */
+        }
+
+        .buttons-container {
+            display: flex;
+            gap: 20px;
+            position: relative;
+            align-items: center;
+            justify-content: center;
+            height: 80px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        button {
+            padding: 12px 35px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 20;
+        }
+
+        .btn-yes {
+            background: var(--primary);
+            color: var(--white);
+            transform-origin: center;
+        }
+
+        .btn-yes:hover,
+        .btn-yes.glow {
+            background: #e0285a;
+            box-shadow: 0 0 30px rgba(255, 71, 126, 0.8);
+            transform: translateY(-2px);
+        }
+
+        .btn-no {
+            background: var(--white);
+            color: var(--primary);
+            position: relative;
+        }
+
+        /* Interactive Polaroid Gallery (Screen 2) */
+        .gallery-wrap {
+            position: relative;
+            height: 250px;
+            width: 100%;
+            max-width: 500px;
+            margin: 20px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .polaroid {
+            position: absolute;
+            background: white;
+            padding: 10px 10px 25px 10px;
+            border-radius: 5px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            z-index: auto;
+        }
+
+        .polaroid img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 3px;
+        }
+
+        .caption {
+            font-family: 'Dancing Script', cursive;
+            color: #555;
+            text-align: center;
+            margin-top: 5px;
+            font-size: 1.1rem;
+        }
+
+        .polaroid:nth-child(1) {
+            transform: rotate(-15deg) translate(-70px, 10px);
+            z-index: 1;
+        }
+
+        .polaroid:nth-child(2) {
+            transform: rotate(5deg) translate(0, -10px);
+            z-index: 2;
+        }
+
+        .polaroid:nth-child(3) {
+            transform: rotate(15deg) translate(70px, 15px);
+            z-index: 3;
+        }
+
+        .polaroid:hover {
+            transform: scale(1.3) rotate(0deg) !important;
+            z-index: 10 !important;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Text area & WhatsApp */
+        .love-paragraph {
+            max-width: 650px;
+            margin: 0 auto 20px;
+            font-size: 1.1rem;
+            color: #444;
+            line-height: 1.6;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(255, 182, 193, 0.4);
+            backdrop-filter: blur(8px);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            margin-top: 10px;
+        }
+
+        .whatsapp-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 400px;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 110px;
+            padding: 15px;
+            border-radius: 15px;
+            border: 2px solid transparent;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            resize: none;
+            outline: none;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(255, 71, 126, 0.3);
+        }
+
+        .btn-send {
+            background: #25D366;
+            color: white;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-send:hover {
+            background: #1ebc5a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+        }
+
+        .error-msg {
+            color: #d32f2f;
+            font-size: 0.95rem;
+            height: 20px;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .error-msg.visible {
+            opacity: 1;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2.8rem;
+            }
+
+            h2 {
+                font-size: 2.2rem;
+            }
+
+            .envelope {
+                transform: scale(0.85);
+            }
+
+            .gallery-wrap {
+                transform: scale(0.8);
+                margin: 0;
+                height: 200px;
+            }
+
+            .love-paragraph {
+                font-size: 1rem;
+                padding: 15px;
+            }
+
+            button {
+                font-size: 1.1rem;
+                padding: 10px 25px;
+            }
+
+            .message {
+                top: 10px;
+                left: 10px;
+                padding: 10px 15px;
+                font-size: 1rem;
+                max-width: calc(100% - 20px);
+            }
+        }
+
+        /* Event Details Styles */
+        .event-details {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 25px auto;
+            width: 100%;
+            max-width: 600px;
+            z-index: 15;
+        }
+
+        .detail-box {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            padding: 15px;
+            flex: 1;
+            min-width: 200px;
+            box-shadow: 0 8px 25px rgba(255, 71, 126, 0.2);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .detail-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(255, 71, 126, 0.3);
+        }
+
+        .detail-icon {
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+        }
+
+        .detail-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.8rem;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .detail-text {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.1rem;
+            color: #444;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        .countdown {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .cd-box {
+            background: linear-gradient(135deg, #ff477e, #ff7096);
+            color: white;
+            border-radius: 8px;
+            padding: 8px 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 55px;
+            box-shadow: 0 4px 10px rgba(255, 71, 126, 0.4);
+        }
+
+        .cd-num {
+            font-size: 1.4rem;
+            font-weight: bold;
+            line-height: 1;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .cd-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+            opacity: 0.9;
+        }
+
+        .our-names-title {
+            font-family: 'Dancing Script', cursive;
+            color: var(--primary);
+            font-size: 3rem;
+            text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.5);
+            margin: -5px 0 15px;
+            background: linear-gradient(45deg, #ff477e, #ff7096);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: pulse 2s infinite ease-in-out;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Personalization: Music -->
+    <audio id="bgMusic" loop autoplay>
+        <!-- Place your custom music file here -->
+        <source
+            src="https://raw.githubusercontent.com/techwolf2018-cmyk/jj/main/Ninte%20Nunakuzhi%20Kandapo%20-%20KALYANI%20_%20Malayalam.mp3"
+            type="audio/mpeg">
+    </audio>
+
+    <!-- Background Elements -->
+    <div class="particles-container" id="particlesBg"></div>
+
+    <!-- Screen 0: Initial Interactive Envelope -->
+    <div class="screen active" id="screen0">
+        <div class="envelope-container" id="envelopeBtn">
+            <div class="envelope" id="envelope">
+                <div class="envelope-flap"></div>
+                <div class="envelope-paper">
+                    <p>For my <br><span class="her-name">Love</span></p>
+                </div>
+                <div class="envelope-front"></div>
+            </div>
+            <p class="click-text">Hey Makriii &#x2764; Tap to open 💌</p>
+        </div>
+    </div>
+
+    <!-- Screen 1: The Proposal Game -->
+    <div class="screen" id="screen1">
+        <h1>Hey <span class="her-name">Love</span>...<br>Will you be my Valentine? 💖</h1>
+        <p class="message" id="teasingMessage"></p>
+
+        <div class="buttons-container">
+            <button class="btn-yes" id="btnYes">YES &#x1F618;💕</button>
+            <button class="btn-no" id="btnNo">NO 😢</button>
+        </div>
+    </div>
+
+    <!-- Screen 2: Acceptance & Event Details -->
+    <div class="screen" id="screen2"
+        style="display: block; overflow-y: auto; overflow-x: hidden; padding: 50px 20px; text-align: center;">
+        <h1 style="font-size: 2.2rem; margin-bottom: 5px;">You will be mine in... ❤️</h1>
+        <div class="our-names-title">JOBIN & <span class="her-name">Love</span></div>
+
+        <div class="event-details">
+            <div class="detail-box">
+                <div class="detail-icon">📅</div>
+                <div class="detail-title">Save The Date</div>
+                <div class="detail-text">JANUARY 04, 2027</div>
+                <div class="countdown" id="countdown">
+                    <div class="cd-box"><span class="cd-num" id="cd-days">00</span><span class="cd-label">Days</span>
+                    </div>
+                    <div class="cd-box"><span class="cd-num" id="cd-hours">00</span><span class="cd-label">Hrs</span>
+                    </div>
+                    <div class="cd-box"><span class="cd-num" id="cd-mins">00</span><span class="cd-label">Min</span>
+                    </div>
+                    <div class="cd-box"><span class="cd-num" id="cd-secs">00</span><span class="cd-label">Sec</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="detail-box">
+                <div class="detail-icon">🏰</div>
+                <div class="detail-title">Our Venue</div>
+                <div class="detail-text">St. Mary's Orthodox Syrian Cathedral, Thumpamon
+                    <br>Pathanamthitta, Kerala
+                </div>
+                <div style="margin-top:15px; font-size:2.2rem; animation: bounce 2s infinite;">✨ 🥂 💍</div>
+            </div>
+        </div>
+
+        <!-- Interactive Polaroids -->
+        <div class="gallery-wrap">
+            <div class="polaroid">
+                <img src="https://raw.githubusercontent.com/techwolf2018-cmyk/jj/main/angel.jpg"
+                    alt="Beautiful Moment 1">
+                <div class="caption">Our Spark ✨</div>
+            </div>
+            <div class="polaroid">
+                <img src="https://raw.githubusercontent.com/techwolf2018-cmyk/jj/main/lv.png" alt="Beautiful Moment 2">
+                <div class="caption">Always 🤝</div>
+            </div>
+            <div class="polaroid">
+                <img src="http://raw.githubusercontent.com/techwolf2018-cmyk/jj/main/jobin.jpg"
+                    alt="Beautiful Moment 3">
+                <div class="caption">Forever ❤️</div>
+            </div>
+        </div>
+
+        <p class="love-paragraph">
+            It’s strange how everything started…
+            Not from a plan, not from a dream… but from a small matrimony ad in a newspaper.
+            Your dad saw my profile… reached out… and somehow, our worlds got connected.
+
+            At first, I honestly thought—this won’t happen.
+            Different countries, different backgrounds, different lifestyles…
+            And to be real, I never liked people who seemed arrogant or distant.
+
+            I realized… you were never arrogant.
+            That was just something I assumed.
+            Behind that, there was someone kind… someone who cares deeply… someone who stands by people.
+
+            I started liking the way you are with me…
+            The way you talk, the way you understand, the way you stay.
+            I may not know everything about you… but I know this—
+            You have a beautiful heart.
+
+            And what touched me the most…
+            Is how you value family… how you respect parents…
+            That matters a lot to me, because my parents are my world.
+
+            Maybe I’m not in your level right now…
+            Maybe I’m still building myself… still learning, still growing…
+            But I promise you this—I’ll keep working on myself, for a better future… for us.
+
+            I don’t want something temporary…
+            I’m looking for something real… something lasting…
+            A partner for life.
+
+            We may have differences…
+            I promise, I’ll always stand with you.
+            Because I don’t just like you…
+            I’ve started imagining a life with you.
+
+            So today… with honesty, with respect, and with real feelings…
+            I want to ask you something simple, but meaningful…
+
+            Will you be with me… not just for now, but for everything that life brings? ❤️
+        </p>
+
+        <h2 style="font-size: 2.4rem; margin: 30px 0 15px;">💍 Can't wait for our big day 💍</h2>
+
+        <div class="whatsapp-section" style="margin: 0 auto;">
+            <textarea id="responseMessage" placeholder="Pour your heart out here..."></textarea>
+            <span class="error-msg" id="errorMsg">Write something sweet 😢</span>
+            <button class="btn-send" id="btnSend">
+                Send Your Love 💕
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                    <path
+                        d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // ⚙️ CONFIGURATION VARIABLES
+        // ==========================================
+        const HER_NAME = "ANGEL";
+        const YOUR_PHONE = "+966539531530";
+
+        document.querySelectorAll('.her-name').forEach(el => el.textContent = HER_NAME);
+
+        // Teasing Messages
+        const teasingMessages = [
+
+            "Life without you is like a broken pencil... pointless! 🥺",
+            "But we make such a great team! 🤝",
+            "My heart says it has to be you. 💖",
+            "Have you SEEN us together? We're adorable. 🥰",
+            "Think of all our future adventures! 🚀",
+            "Who else will laugh at my bad jokes? 😂",
+            "I promise to share my food... always! 🍕",
+            "I'd pause my favorite game just for you! ⏸️",
+            "A 'No' today is just a 'Yes' delayed! ⏳",
+            "Plot twist: 'No' is not a valid option. 😏",
+            "My world spins around you! 🌍",
+            "Breaking my heart is a crime! 🚔"
+        ];
+
+        const yesQuotes = [
+            "Best decision you'll ever make! 💕",
+            "This is the one! ✨",
+            "You know you want to click me! 🥰",
+            "Saying Yes will make both of us smile! 🥹",
+            "Let's start our forever! 💍",
+            "From this moment, there is no ‘you’ and ‘me’… only ‘us’ ❤️",
+            "We’ll explore life together, step by step 💫",
+            "I may not be perfect, but I’ll try every day to make you happy",
+            "I loved the way you spent time with me… it meant everything",
+            "I loved the way you spent time with me… it meant everything",
+            "At first I thought you were arrogant… but now I know it was just your shield",
+            "I like how you supported me in front of others ❤️",
+            "I love how you open your heart so honestly",
+            "If you say yes, your family will be mine too 💞 And if you accept my parents like yours, I’ll be the happiest person alive",
+            "My parents are my world… and I want you to be part of it",
+            "I know I’m not settled yet… but I promise I will work for our future",
+            "I may not match your level today… but I’ll grow for us",
+            "If you say yes, I’ll take you for kite flying and make small happy memories 🪁",
+            "We’ll travel together… even if it’s within my budget, but with full love 🌍",
+            "I’ll take care of Simba like my own 🐾",
+            "I know I still have a lot to learn… but I promise I’ll try",
+            "I’ll take care of you the best I can… and keep improving for you",
+            "We might have small fights in the future… but if you’re ready to fix them, I’ll always stay",
+            "I don’t want just love… I want a life partner to share everything",
+            "Support, care, respect… I want to build everything together with you ❤️"
+
+        ];
+
+        // Elements
+        const envelopeBtn = document.getElementById('envelopeBtn');
+        const envelope = document.getElementById('envelope');
+        const screen0 = document.getElementById('screen0');
+        const screen1 = document.getElementById('screen1');
+        const screen2 = document.getElementById('screen2');
+        const btnNo = document.getElementById('btnNo');
+        const btnYes = document.getElementById('btnYes');
+        const teasingMsgEl = document.getElementById('teasingMessage');
+        const bgMusic = document.getElementById('bgMusic');
+        const btnSend = document.getElementById('btnSend');
+        const textarea = document.getElementById('responseMessage');
+        const errorMsg = document.getElementById('errorMsg');
+        const particlesBg = document.getElementById('particlesBg');
+
+        let noClickCount = 0;
+        let scaleYes = 1;
+
+        // 1. Envelope opening transition
+        envelopeBtn.addEventListener('click', () => {
+            // Open animation
+            envelope.classList.add('open');
+
+            // Start audio silently
+            try { bgMusic.play().catch(e => console.log(e)); } catch (err) { }
+
+            // Wait 1.5s then fade to Screen 1
+            setTimeout(() => {
+                screen0.classList.remove('active');
+                setTimeout(() => screen1.classList.add('active'), 800);
+            }, 1800);
+        });
+
+        // 2. Interactive "No" Button dodger
+        const moveNoButton = () => {
+            if (btnNo.style.position !== 'fixed') {
+                btnNo.style.position = 'fixed';
+            }
+
+            const maxX = window.innerWidth - btnNo.offsetWidth - 20;
+            const maxY = window.innerHeight - btnNo.offsetHeight - 20;
+
+            const randomX = Math.max(20, Math.floor(Math.random() * maxX));
+            const randomY = Math.max(20, Math.floor(Math.random() * maxY));
+
+            btnNo.style.left = randomX + 'px';
+            btnNo.style.top = randomY + 'px';
+
+            scaleYes += 0.2;
+            btnYes.style.transform = `scale(${scaleYes})`;
+
+            teasingMsgEl.style.opacity = 0;
+            setTimeout(() => {
+                teasingMsgEl.textContent = teasingMessages[noClickCount % teasingMessages.length];
+                teasingMsgEl.style.opacity = 1;
+                noClickCount++;
+            }, 150);
+        };
+
+        btnNo.addEventListener('mouseenter', moveNoButton);
+        btnNo.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            moveNoButton();
+        });
+
+        // 3. YES Logic
+        btnYes.addEventListener('mouseenter', () => {
+            teasingMsgEl.style.opacity = 0;
+            setTimeout(() => {
+                teasingMsgEl.textContent = yesQuotes[Math.floor(Math.random() * yesQuotes.length)];
+                teasingMsgEl.style.opacity = 1;
+            }, 150);
+        });
+
+        btnYes.addEventListener('click', () => {
+            createBurst();
+            screen1.classList.remove('active');
+            setTimeout(() => {
+                screen2.classList.add('active');
+            }, 600);
+        });
+
+        // 4. WhatsApp Sender Validate
+        btnSend.addEventListener('click', () => {
+            const message = textarea.value.trim();
+            if (!message) {
+                errorMsg.classList.add('visible');
+                textarea.style.borderColor = "#ff477e";
+                btnSend.style.transform = "translateX(-5px)";
+                setTimeout(() => btnSend.style.transform = "translateX(5px)", 100);
+                setTimeout(() => btnSend.style.transform = "translateX(-5px)", 200);
+                setTimeout(() => btnSend.style.transform = "translateX(0)", 300);
+                return;
+            }
+
+            errorMsg.classList.remove('visible');
+            const finalMessage = `Hey ❤️ it's me...\nI just saw your proposal and this is how I feel:\n\n${message}`;
+            window.open(`https://wa.me/${YOUR_PHONE}?text=${encodeURIComponent(finalMessage)}`, '_blank');
+        });
+
+        textarea.addEventListener('input', () => {
+            if (textarea.value.trim().length > 0) {
+                errorMsg.classList.remove('visible');
+                textarea.style.borderColor = "transparent";
+            }
+        });
+
+        // 5. Ambient Falling Effects (Hearts & Petals & Stars)
+        function createAmbientParticle() {
+            const particle = document.createElement('div');
+            particle.classList.add('ambient-particle');
+            const icons = ['❤️', '💖', '🌸', '✨', '🤍', '🌹'];
+            particle.innerHTML = icons[Math.floor(Math.random() * icons.length)];
+
+            particle.style.left = Math.random() * 100 + 'vw';
+
+            const duration = Math.random() * 4 + 6;
+            particle.style.animationDuration = duration + 's';
+            particle.style.fontSize = (Math.random() * 15 + 15) + 'px';
+
+            particlesBg.appendChild(particle);
+            setTimeout(() => particle.remove(), duration * 1000);
+        }
+        setInterval(createAmbientParticle, 400);
+
+        function createBurst() {
+            for (let i = 0; i < 60; i++) {
+                setTimeout(createAmbientParticle, i * 20);
+            }
+        }
+
+        // 6. Interactive Mouse Trail Sparkles
+        document.addEventListener('mousemove', (e) => {
+            if (Math.random() > 0.4) return; // Add slight gap so it's not overwhelming
+
+            const particle = document.createElement('div');
+            particle.className = 'mouse-trail-particle';
+            // Alternating tiny effects
+            particle.innerHTML = Math.random() > 0.5 ? '✨' : '💖';
+            particle.style.left = e.pageX + 'px';
+            particle.style.top = e.pageY + 'px';
+            document.body.appendChild(particle);
+
+            // Animate out
+            requestAnimationFrame(() => {
+                particle.style.transform = `translate(-50%, -50%) translateY(20px) scale(0)`;
+                particle.style.opacity = '0';
+            });
+
+            setTimeout(() => particle.remove(), 800);
+        });
+
+        // ==========================================
+        // ⏳ COUNTDOWN LOGIC
+        // ==========================================
+        const targetDate = new Date("Dec 25, 2026 10:00:00").getTime();
+
+        const updateCountdown = () => {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            const cdDays = document.getElementById("cd-days");
+            if (!cdDays) return;
+
+            if (distance < 0) {
+                document.getElementById("countdown").innerHTML = "<div class='cd-box' style='width:100%;'><span class='cd-num'>🎉</span><span class='cd-label'>IT'S TIME!</span></div>";
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            cdDays.textContent = days.toString().padStart(2, '0');
+            document.getElementById("cd-hours").textContent = hours.toString().padStart(2, '0');
+            document.getElementById("cd-mins").textContent = minutes.toString().padStart(2, '0');
+            document.getElementById("cd-secs").textContent = seconds.toString().padStart(2, '0');
+        };
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // Try to play audio automatically on any interaction if autoplay is blocked
+        document.body.addEventListener('click', () => {
+            if (bgMusic.paused) {
+                bgMusic.play().catch(e => console.log(e));
+            }
+        }, { once: true });
+
+    </script>
+</body>
+
+</html>
